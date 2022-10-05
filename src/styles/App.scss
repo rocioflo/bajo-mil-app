@@ -5,19 +5,53 @@
   background-color: #f2f3f3;
   height: 100vh;
   font-family: $mainFont;
-  padding: 0.5rem;
 
   & .header {
-    height: 10vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    background: linear-gradient(45deg, #f2f3f3, white);
+    border-radius: 20px;
+    height: 17vh;
+    display: grid;
+    grid-template-rows: 3fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
 
     & .title {
-      font-size: 2rem;
+      font-size: 4rem;
       font-family: $titleFont;
       color: $secondColor;
+      padding: 2.5rem 1rem;
+      filter: drop-shadow(5px 5px #aa2739);
+      grid-column: 1/4;
+      grid-row: 1/2;
+    }
+
+    & .menu {
+      grid-column: 1/5;
+      grid-row: 2/3;
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      padding: 0 1rem;
+
+      & .menu-artist {
+        grid-column: 1/2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background-color: $secondColor;
+        }
+      }
+
+      & .menu-genre {
+        grid-column: 2/3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background-color: $secondColor;
+        }
+      }
     }
   }
 

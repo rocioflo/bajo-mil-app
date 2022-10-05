@@ -100,6 +100,10 @@ function App() {
         >
           Login to Spotify eh
         </a>
+        <nav className='menu'>
+          <a className='menu-artist'>Por artista</a>
+          <a className='menu-genre'>Por género</a>
+        </nav>
       </header>
       <main>
         <form className="first-form">
@@ -160,7 +164,7 @@ function App() {
               onChange={handleRadio}
             />
           </label>
-          <input type="submit" value="Niiice" className="second-form-button" />
+          {/* <input type="submit" value="Niiice" className="second-form-button" /> */}
         </form>
         {/* <button onClick={handleSearch}>Busca</button> */}
         {genre && isLoading && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
