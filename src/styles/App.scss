@@ -7,9 +7,8 @@
   font-family: $mainFont;
 
   & .header {
-    background: linear-gradient(45deg, #f2f3f3, white);
-    border-radius: 20px;
-    height: 17vh;
+    background: white;
+    border-radius: 10px;
     display: grid;
     grid-template-rows: 3fr 1fr;
     grid-template-columns: repeat(4, 1fr);
@@ -39,6 +38,8 @@
 
         &:hover {
           background-color: $secondColor;
+          border-radius: 10px;
+          color: white;
         }
       }
 
@@ -50,6 +51,8 @@
 
         &:hover {
           background-color: $secondColor;
+          border-radius: 10px;
+          color: white;
         }
       }
     }
@@ -60,7 +63,7 @@
     flex-direction: column;
     gap: 0.6rem;
     align-items: center;
-    padding: 0.5rem;
+    padding: 1rem;
 
     & .first-form-label {
       display: flex;
@@ -68,12 +71,25 @@
       gap: 0.3rem;
     }
 
+    & .first-form-select {
+      color: white; 
+      background-color: $secondColor;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+
     & .first-form-button {
       background-color: $firstColor;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.7rem;
+      border-radius: 5px;
     }
   }
 
   .second-form {
+    padding: 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: repeat(7, 1fr);
@@ -81,31 +97,29 @@
 
 
     & .second-form-label {
-      grid-row: 1/2;
+      grid-column: 2/4;
     }
+
     & .genre-pop {
-      grid-row: 2/3;
+      grid-column: 2/4;
     }
 
     & .genre-indie {
-      grid-row: 3/4;
+      grid-column: 2/4;
     }
+
     & .genre-blues {
-      grid-row: 4/5;
+      grid-column: 2/4;
     }
 
     & .genre-classical {
-      grid-row: 5/6;
-    }
-    & .genre-samba {
-      grid-row: 6/7;
-    }
-    
-    & .second-form-button {
-      background-color: $firstColor;
-      grid-row: 7/8;
       grid-column: 2/4;
     }
+
+    & .genre-samba {
+      grid-column: 2/4;
+    }
+
   }
 
   .recommendation {
