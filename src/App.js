@@ -4,6 +4,25 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+function ArtistForm() {
+  return <form className="first-form">
+          <label className="first-form-label">
+            Selecciona un artista que le hable a tu alma
+            <select>
+              <option>Taylor Swift</option>
+              <option>Dodie</option>
+              <option>Sammy Rae & The Friends</option>
+            </select>
+          </label>
+          <input type="submit" value="Dale" className="first-form-button" />
+        </form>
+}
+
+function renderGenreForm() {
+  return 
+}
+
+
 function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
@@ -15,6 +34,7 @@ function App() {
   const [recommendation, setRecommendation] = useState(null);
 
   const [genre, setGenre] = useState(null);
+  const [watching, setWatching] = useState('artist')
 
   const { isLoading } = useQuery(
     ['songs', genre],
@@ -73,7 +93,6 @@ function App() {
     image: '',
   });
 
-  // useEffect(() => CallToApi(), []);
 
   const handleSearch = (ev) => {
     ev.preventDefault();
@@ -89,7 +108,6 @@ function App() {
     // CallToApi(token, value);
   };
 
-  // React Queries
 
   return (
     <div className="App">
@@ -101,22 +119,12 @@ function App() {
           Login to Spotify eh
         </a>
         <nav className='menu'>
-          <a className='menu-artist'>Por artista</a>
-          <a className='menu-genre'>Por género</a>
+          <a className='menu-artist' onClick={() => setWatching('artist')}>Por artista</a>
+          <a className='menu-genre' onClick={() => setWatching('genre')}>Por género</a>
         </nav>
       </header>
       <main>
-        <form className="first-form">
-          <label className="first-form-label">
-            Selecciona un artista que le hable a tu alma
-            <select>
-              <option>Taylor Swift</option>
-              <option>Dodie</option>
-              <option>Sammy Rae & The Friends</option>
-            </select>
-          </label>
-          <input type="submit" value="Dale" className="first-form-button" />
-        </form>
+        {watching === 'artist' && <ArtistForm/>}
         <form className="second-form">
           <label className="second-form-label">O selecciona un género</label>
           <label className='genre-pop'>
