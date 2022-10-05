@@ -1,0 +1,94 @@
+@import 'reset';
+@import 'variables';
+
+.App {
+  background-color: #f2f3f3;
+  height: 100vh;
+  font-family: $mainFont;
+  padding: 0.5rem;
+
+  & .header {
+    height: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    & .title {
+      font-size: 2rem;
+      font-family: $titleFont;
+      color: $secondColor;
+    }
+  }
+
+  .first-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.5rem;
+
+    & .first-form-label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    & .first-form-button {
+      background-color: $firstColor;
+    }
+  }
+
+  .second-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(7, 1fr);
+    gap: 0.6rem;
+
+
+    & .second-form-label {
+      grid-row: 1/2;
+    }
+    & .genre-pop {
+      grid-row: 2/3;
+    }
+
+    & .genre-indie {
+      grid-row: 3/4;
+    }
+    & .genre-blues {
+      grid-row: 4/5;
+    }
+
+    & .genre-classical {
+      grid-row: 5/6;
+    }
+    & .genre-samba {
+      grid-row: 6/7;
+    }
+    
+    & .second-form-button {
+      background-color: $firstColor;
+      grid-row: 7/8;
+      grid-column: 2/4;
+    }
+  }
+
+  .recommendation {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7rem;
+
+    & .recommendation-img {
+      max-width: 15rem;
+    }
+  }
+
+  .footer {
+    height: 5vh;
+    padding: 1rem 0;
+  }
+}
