@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+function StartWelcome() {
+  return <div>¡Bienvenide! Musiquita para todes :)</div>
+}
+
 function ArtistForm({handleSelect}) {
   return <form className="first-form">
           <label className="first-form-label">
@@ -71,6 +75,7 @@ function GenreForm({handleRadio}) {
 }
 
 
+
 function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
@@ -83,7 +88,7 @@ function App() {
 
   const [genre, setGenre] = useState(null);
   const [artist, setArtist] = useState(null);
-  const [watching, setWatching] = useState('artist');
+  const [watching, setWatching] = useState('start');
 
   const { isLoading: byGenre } = useQuery(
     ['songsByGenre', genre],
@@ -194,6 +199,7 @@ function App() {
         </nav>
       </header>
       <main>
+        {watching === 'start' && <StartWelcome/>}
         {watching === 'artist' && <ArtistForm handleSelect={handleSelect}/>}
         {watching === 'genre' && <GenreForm handleRadio={handleRadio}/>}
         {genre && byGenre  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
