@@ -8,18 +8,34 @@ function StartWelcome() {
   return <div>¡Bienvenide! Musiquita para todes :)</div>
 }
 
-function ArtistForm({handleSelect}) {
-  return <form className="first-form">
-          <label className="first-form-label">
-            Selecciona un artista que le hable a tu alma
-            <select className='first-form-select' onChange={handleSelect}>
-              <option value='06HL4z0CvFAxyc27GXpf02'>Taylor Swift</option>
-              <option value='21TinSsF5ytwsfdyz5VSVS'>Dodie</option>
-              <option value='3lFDsTyYNPQc8WzJExnQWn'>Sammy Rae & The Friends</option>
+// function ArtistForm({handleSelect}) {
+//   return <form className="first-form">
+//           <label className="first-form-label">
+//             Selecciona un artista que le hable a tu alma
+//             <select className='first-form-select' onChange={handleSelect}>
+//               <option value='06HL4z0CvFAxyc27GXpf02'>Taylor Swift</option>
+//               <option value='21TinSsF5ytwsfdyz5VSVS'>Dodie</option>
+//               <option value='3lFDsTyYNPQc8WzJExnQWn'>Sammy Rae & The Friends</option>
+//               <option value='6flBUmmOMLNhD4EJhGwgpG'>Camela</option>
+//             </select>
+//           </label>
+//           <input type="submit" value="Dale" className="first-form-button" />
+//         </form>
+// }
+
+function ArtistCall({handleSelect, handleFilter, filteredData, filter}) {
+ const filterList = filteredData.map((item) => <option value={item.id}>{item.name}</option>)
+
+  return  <form className='first-form'>
+          <label className='first-form-label'>
+          Selecciona un artista que le hable a tu alma
+          <input className='first-form-select' type='text' placeholder='Taylor Swift...' onChange={handleFilter} value={filter}/>
+          <select    onChange={handleSelect}>
+          <option selected disabled>Elige aquí</option>
+            {filterList}
             </select>
           </label>
-          <input type="submit" value="Dale" className="first-form-button" />
-        </form>
+          </form>
 }
 
 function GenreForm({handleRadio}) {
@@ -78,6 +94,7 @@ function GenreForm({handleRadio}) {
 
 function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+  const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
   const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
@@ -89,6 +106,9 @@ function App() {
   const [genre, setGenre] = useState(null);
   const [artist, setArtist] = useState(null);
   const [watching, setWatching] = useState('start');
+  const [filter, setFilter] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
 
   const { isLoading: byGenre } = useQuery(
     ['songsByGenre', genre],
@@ -148,6 +168,23 @@ function App() {
     }
   );
 
+  const { isLoading: searchArtist } = useQuery(['artistFilter', filter], () => {
+    return axios.get(`https://api.spotify.com/v1/search?q=${filter}&type=artist`,  {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    );
+  },
+  {
+    onSuccess: ({data}) => {
+      setFilteredData(data.artists.items);
+      console.log(filteredData)
+    },
+    enabled: !!filter
+  }
+  );
+
   useEffect(() => {
     const hash = window.location.hash;
     let token = window.localStorage.getItem('token');
@@ -176,18 +213,20 @@ function App() {
     setArtist(value)
   }
 
-
   const handleRadio = (ev) => {
     const value = ev.target.value;
     console.log(value);
     setGenre(value);
   };
 
+  const handleFilter = (ev) => {
+    setFilter(ev.target.value)
+  }
 
   return (
     <div className="App">
       <header className="header">
-        <h1 className="title">Bajo mil</h1>
+        <a className="title" href={REDIRECT_URI}>Bajo mil</a>
         <a
           href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
         >
@@ -200,7 +239,7 @@ function App() {
       </header>
       <main>
         {watching === 'start' && <StartWelcome/>}
-        {watching === 'artist' && <ArtistForm handleSelect={handleSelect}/>}
+        {watching === 'artist' && <ArtistCall handleSelect={handleSelect} handleFilter={handleFilter} filteredData={filteredData} filter={filter}/>}
         {watching === 'genre' && <GenreForm handleRadio={handleRadio}/>}
         {genre && byGenre  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
 
