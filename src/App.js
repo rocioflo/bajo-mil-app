@@ -24,7 +24,7 @@ function StartWelcome() {
 // }
 
 function ArtistCall({handleSelect, handleFilter, filteredData, filter}) {
- const filterList = filteredData.map((item) => <option value={item.id}>{item.name}</option>)
+ const filterList = filteredData.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)
 
   return  <form className='first-form'>
           <label className='first-form-label'>
