@@ -23,19 +23,24 @@ function StartWelcome() {
 //         </form>
 // }
 
-function ArtistCall({handleSelect, handleFilter, filteredData, filter}) {
- const filterList = filteredData.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)
+function ArtistCall({handleSelect, handleFilter, filteredData, filter, artistList}) {
 
   return  <form className='first-form'>
           <label className='first-form-label'>
           Selecciona un artista que le hable a tu alma
-          <input className='first-form-select' type='text' placeholder='Taylor Swift...' onChange={handleFilter} value={filter}/>
-          <select    onChange={handleSelect}>
+          <input className='first-form-input' type='text' placeholder='Taylor Swift...' onChange={handleFilter} value={filter}/>
+            {artistList === 'see' && <ArtistList filteredData={filteredData} handleSelect={handleSelect}/>}
+          </label>
+          </form>
+}
+
+function ArtistList({filteredData, handleSelect}) {
+  const filterList = filteredData.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)
+
+  return <select className='first-form-select'   onChange={handleSelect}>
           <option selected disabled>Elige aquí</option>
             {filterList}
             </select>
-          </label>
-          </form>
 }
 
 function GenreForm({handleRadio}) {
@@ -106,6 +111,7 @@ function App() {
   const [genre, setGenre] = useState(null);
   const [artist, setArtist] = useState(null);
   const [watching, setWatching] = useState('start');
+  const [artistList, setArtistList] = useState('')
   const [filter, setFilter] = useState('');
   const [filteredData, setFilteredData] = useState([]);
 
@@ -221,6 +227,7 @@ function App() {
 
   const handleFilter = (ev) => {
     setFilter(ev.target.value)
+    setArtistList('see')
   }
 
   return (
@@ -239,7 +246,7 @@ function App() {
       </header>
       <main>
         {watching === 'start' && <StartWelcome/>}
-        {watching === 'artist' && <ArtistCall handleSelect={handleSelect} handleFilter={handleFilter} filteredData={filteredData} filter={filter}/>}
+        {watching === 'artist' && <ArtistCall handleSelect={handleSelect} handleFilter={handleFilter} filteredData={filteredData} filter={filter} artistList={artistList}/>}
         {watching === 'genre' && <GenreForm handleRadio={handleRadio}/>}
         {genre && byGenre  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
 

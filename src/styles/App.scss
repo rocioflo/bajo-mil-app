@@ -72,12 +72,22 @@
       gap: 0.3rem;
     }
 
-    & .first-form-select {
+    & .first-form-input {
       color: white; 
       background-color: $secondColor;
       border: none;
       padding: 0.5rem;
       border-radius: 5px;
+    }
+
+    & .first-form-select {
+      color: white; 
+      background-color: #aa2739;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 5px;
+      position: relative;
+      top: -4px;
     }
 
     & .first-form-button {
