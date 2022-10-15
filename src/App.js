@@ -1,8 +1,10 @@
 import './styles/App.scss';
 import CallToApi from './services/api';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { Buffer } from 'buffer';
+
 
 function StartWelcome() {
   return <div>¡Bienvenide! Musiquita para todes :)</div>
@@ -24,10 +26,9 @@ function StartWelcome() {
 // }
 
 function ArtistCall({handleSelect, handleFilter, filteredData, filter, artistList}) {
-
   return  <form className='first-form'>
           <label className='first-form-label'>
-          Selecciona un artista que le hable a tu alma
+          Dime un artista que le hable a tu alma
           <input className='first-form-input' type='text' placeholder='Taylor Swift...' onChange={handleFilter} value={filter}/>
             {artistList === 'see' && <ArtistList filteredData={filteredData} handleSelect={handleSelect}/>}
           </label>
@@ -95,7 +96,24 @@ function GenreForm({handleRadio}) {
 </form>
 }
 
-
+function Recommendation({recommendation, byGenre, byArtist, artist, genre}) {
+    return <>{genre && byGenre  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
+              
+              {artist && byArtist  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
+              {recommendation && (!byArtist || !byGenre) && (
+                <div className="recommendation">
+                  <p>Échale un oído a</p>
+                  <p>{recommendation.name}</p>
+                  <p>{recommendation.artist}</p>
+                  <img
+                    alt={`It's ${recommendation.name} by ${recommendation.artist}`}
+                    src={recommendation.image}
+                    className="recommendation-img"
+                  />
+                  <a href={recommendation.url} target='_blank' rel='noreferrer'>Escúchala aquí</a>
+                </div>
+              )}</>
+}
 
 function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
@@ -180,7 +198,7 @@ function App() {
         Authorization: `Bearer ${token}`,
       },
     }
-    );
+    )
   },
   {
     onSuccess: ({data}) => {
@@ -195,8 +213,6 @@ function App() {
     const hash = window.location.hash;
     let token = window.localStorage.getItem('token');
 
-    console.log(hash, token);
-
     if (!token && hash) {
       token = hash
         .substring(1)
@@ -204,14 +220,24 @@ function App() {
         .find((elem) => elem.startsWith('access_token'))
         .split('=')[1];
 
-      console.log(token);
-
       window.location.hash = '';
       window.localStorage.setItem('token', token);
     }
 
     setToken(token);
   }, []);
+
+
+  // const getToken = useMutation(['token'], () => { 
+  //   axios.post('https://accounts.spotify.com/api/token', {
+  //   headers: { 
+  //     'Authorization' : 'Basic ' + (Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')),
+  //     'Content-Type' : 'application/x-www-form-urlencoded'
+  //    },
+  //   body: JSON.stringify( { grant_type: 'client_credentials' } ),
+  //   json: true})
+  // })
+
 
   const handleSelect = (ev) => {
     const value = ev.target.value;
@@ -248,39 +274,13 @@ function App() {
         {watching === 'start' && <StartWelcome/>}
         {watching === 'artist' && <ArtistCall handleSelect={handleSelect} handleFilter={handleFilter} filteredData={filteredData} filter={filter} artistList={artistList}/>}
         {watching === 'genre' && <GenreForm handleRadio={handleRadio}/>}
-        {genre && byGenre  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
-
-        {recommendation && !byGenre && (
-          <div className="recommendation">
-            <p>Échale un oído a</p>
-            <p>{recommendation.name}</p>
-            <p>{recommendation.artist}</p>
-            <img
-              alt={`It's ${recommendation.name} by ${recommendation.artist}`}
-              src={recommendation.image}
-              className="recommendation-img"
-            />
-            <a href={recommendation.url} target='_blank'>Escúchala aquí</a>
-          </div>
-        )}
-        {artist && byArtist  && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
-
-        {recommendation && !byArtist && (
-          <div className="recommendation">
-            <p>Échale un oído a</p>
-            <p>{recommendation.name}</p>
-            <p>{recommendation.artist}</p>
-            <img
-              alt={`It's ${recommendation.name} by ${recommendation.artist}`}
-              src={recommendation.image}
-              className="recommendation-img"
-            />
-            <a href={recommendation.url} target='_blank'>Escúchala aquí</a>
-          </div>
-        )}  
+        
+        <Recommendation recommendation={recommendation} byArtist={byArtist} byGenre={byGenre} artist={artist} genre={genre}/> 
       </main>
       <footer className="footer">
         <p>By Ro Flo :)</p>
+        {/* <button onClick={getToken.mutate}>Token time</button>
+        {getToken.isError? (<div>Error</div>) : getToken.isLoading ? (<div>Loading</div>) : getToken.isIdle ? (<div>Idle</div>) : null} */}
       </footer>
     </div>
   );
