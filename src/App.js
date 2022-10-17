@@ -1,116 +1,16 @@
 import "./styles/App.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-
-function StartWelcome() {
-  return <div>¡Bienvenide! Musiquita para todes :)</div>;
-}
-
-function ArtistCall({
-  handleSelectArtist,
-  handleFilter,
-  filteredData,
-  filter,
-  artistList,
-}) {
-  return (
-    <form className="first-form">
-      <label className="first-form-label">
-        Dime un artista que le hable a tu alma
-        <input
-          className="first-form-input"
-          type="text"
-          placeholder="Taylor Swift..."
-          onChange={handleFilter}
-          value={filter}
-        />
-        {artistList === "see" && (
-          <ArtistList
-            filteredData={filteredData}
-            handleSelectArtist={handleSelectArtist}
-          />
-        )}
-      </label>
-    </form>
-  );
-}
-
-function ArtistList({ filteredData, handleSelectArtist }) {
-  const filterList = filteredData.map((item) => (
-    <option key={item.id} value={item.id}>
-      {item.name}
-    </option>
-  ));
-
-  return (
-    <select className="first-form-select" onChange={handleSelectArtist}>
-      {filterList}
-    </select>
-  );
-}
-
-function GenreForm({ handleSelectGenre, genreList }) {
-  const genreMap = genreList.map((genre, index) => (
-    <option key={index} value={genre}>
-      {genre}
-    </option>
-  ));
-
-  return (
-    <form className="second-form">
-      <label className="second-form-label">Selecciona tu ritmo ragatanga</label>
-      <select className="second-form-input" onChange={handleSelectGenre}>
-        {genreMap}
-      </select>
-    </form>
-  );
-}
-
-function Recommendation({
-  recommendation,
-  byGenre,
-  byArtist,
-  artist,
-  genre,
-  errorMessage,
-  setErrorMessage,
-}) {
-  return (
-    <>
-      {genre && byGenre && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
-
-      {artist && byArtist && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
-
-      {errorMessage === "error" && (
-        <p>Busca otro artista, que este funciona raro</p>
-      )}
-
-      {recommendation && (!byArtist || !byGenre) && errorMessage !== "error" && (
-        <div className="recommendation">
-          <p>Échale un oído a</p>
-          <p>{recommendation.name}</p>
-          <p>{recommendation.artist}</p>
-          <img
-            alt={`It's ${recommendation.name} by ${recommendation.artist}`}
-            src={recommendation.image}
-            className="recommendation-img"
-          />
-          <a href={recommendation.url} target="_blank" rel="noreferrer">
-            Escúchala aquí
-          </a>
-        </div>
-      )}
-    </>
-  );
-}
+import StartWelcome from "./components/StartWelcome";
+import ArtistForm from "./components/ArtistForm";
+import GenreForm from "./components/GenreForm";
+import Recommendation from "./components/Recommendation";
 
 function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
   const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
-  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
-  const RESPONSE_TYPE = "token";
 
   const [token, setToken] = useState("");
 
@@ -236,24 +136,6 @@ function App() {
     }
   );
 
-  // useEffect(() => {
-  //   const hash = window.location.hash;
-  //   let token = window.localStorage.getItem("token");
-
-  //   if (!token && hash) {
-  //     token = hash
-  //       .substring(1)
-  //       .split("&")
-  //       .find((elem) => elem.startsWith("access_token"))
-  //       .split("=")[1];
-
-  //     window.location.hash = "";
-  //     window.localStorage.setItem("token", token);
-  //   }
-
-  //   setToken(token);
-  // }, []);
-
   const { data } = useQuery(
     ["token"],
     () => {
@@ -305,11 +187,6 @@ function App() {
         <a className="title" href={REDIRECT_URI}>
           Bajo mil
         </a>
-        {/* <a
-          href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
-        >
-          Login to Spotify
-        </a> */}
         <nav className="menu">
           <a className="menu-artist" onClick={() => setWatching("artist")}>
             Por artista
@@ -322,7 +199,7 @@ function App() {
       <main>
         {watching === "start" && <StartWelcome />}
         {watching === "artist" && (
-          <ArtistCall
+          <ArtistForm
             handleSelectArtist={handleSelectArtist}
             handleFilter={handleFilter}
             filteredData={filteredData}
@@ -344,7 +221,6 @@ function App() {
           artist={artist}
           genre={genre}
           errorMessage={errorMessage}
-          setErrorMessage={setErrorMessage}
         />
       </main>
       <footer className="footer">
