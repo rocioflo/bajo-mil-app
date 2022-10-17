@@ -67,13 +67,26 @@ function GenreForm({ handleSelectGenre, genreList }) {
   );
 }
 
-function Recommendation({ recommendation, byGenre, byArtist, artist, genre }) {
+function Recommendation({
+  recommendation,
+  byGenre,
+  byArtist,
+  artist,
+  genre,
+  errorMessage,
+  setErrorMessage,
+}) {
   return (
     <>
       {genre && byGenre && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
 
       {artist && byArtist && <p>Carrrrgaannndo que es geruuuuundioooo</p>}
-      {recommendation && (!byArtist || !byGenre) && (
+
+      {errorMessage === "error" && (
+        <p>Busca otro artista, que este funciona raro</p>
+      )}
+
+      {recommendation && (!byArtist || !byGenre) && errorMessage !== "error" && (
         <div className="recommendation">
           <p>Échale un oído a</p>
           <p>{recommendation.name}</p>
@@ -110,6 +123,7 @@ function App() {
   const [genreList, setGenreList] = useState("");
   const [filter, setFilter] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { isLoading: byGenre } = useQuery(
     ["songsByGenre", genre],
@@ -156,6 +170,14 @@ function App() {
       onSuccess: ({ data }) => {
         console.log(data, "de artistas");
 
+        if (data.tracks.length === 0) {
+          console.log("oh no");
+          setErrorMessage("error");
+          return null;
+        }
+
+        setErrorMessage("");
+
         const cleanData = {
           artist: data.tracks[0].artists[0].name,
           name: data.tracks[0].name,
@@ -183,8 +205,12 @@ function App() {
     },
     {
       onSuccess: ({ data }) => {
-        setFilteredData(data.artists.items);
+        let artistData = data.artists.items;
+        setFilteredData(artistData);
         console.log(filteredData);
+      },
+      onError: () => {
+        console.log("error");
       },
       enabled: !!filter,
     }
@@ -204,7 +230,6 @@ function App() {
     },
     {
       onSuccess: ({ data }) => {
-        console.log(data.genres);
         setGenreList(data.genres);
       },
       enabled: !!token,
@@ -261,13 +286,11 @@ function App() {
 
   const handleSelectArtist = (ev) => {
     const value = ev.target.value;
-    console.log(value);
     setArtist(value);
   };
 
   const handleSelectGenre = (ev) => {
     const value = ev.target.value;
-    console.log(value);
     setGenre(value);
   };
 
@@ -320,6 +343,8 @@ function App() {
           byGenre={byGenre}
           artist={artist}
           genre={genre}
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
         />
       </main>
       <footer className="footer">
