@@ -101,34 +101,17 @@
 
   .second-form {
     padding: 1rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: repeat(7, 1fr);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.6rem;
 
-
-    & .second-form-label {
-      grid-column: 2/4;
-    }
-
-    & .genre-pop {
-      grid-column: 2/4;
-    }
-
-    & .genre-indie {
-      grid-column: 2/4;
-    }
-
-    & .genre-blues {
-      grid-column: 2/4;
-    }
-
-    & .genre-classical {
-      grid-column: 2/4;
-    }
-
-    & .genre-samba {
-      grid-column: 2/4;
+    & .second-form-input {
+      color: white; 
+      background-color: $secondColor;
+      border: none;
+      padding: 0.5rem 2.5rem;
+      border-radius: 5px;
     }
 
   }

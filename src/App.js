@@ -8,7 +8,7 @@ function StartWelcome() {
 }
 
 function ArtistCall({
-  handleSelect,
+  handleSelectArtist,
   handleFilter,
   filteredData,
   filter,
@@ -26,14 +26,17 @@ function ArtistCall({
           value={filter}
         />
         {artistList === "see" && (
-          <ArtistList filteredData={filteredData} handleSelect={handleSelect} />
+          <ArtistList
+            filteredData={filteredData}
+            handleSelectArtist={handleSelectArtist}
+          />
         )}
       </label>
     </form>
   );
 }
 
-function ArtistList({ filteredData, handleSelect }) {
+function ArtistList({ filteredData, handleSelectArtist }) {
   const filterList = filteredData.map((item) => (
     <option key={item.id} value={item.id}>
       {item.name}
@@ -41,50 +44,25 @@ function ArtistList({ filteredData, handleSelect }) {
   ));
 
   return (
-    <select className="first-form-select" onChange={handleSelect}>
-      <option selected disabled>
-        Elige aquí
-      </option>
+    <select className="first-form-select" onChange={handleSelectArtist}>
       {filterList}
     </select>
   );
 }
 
-function GenreForm({ handleRadio }) {
+function GenreForm({ handleSelectGenre, genreList }) {
+  const genreMap = genreList.map((genre, index) => (
+    <option key={index} value={genre}>
+      {genre}
+    </option>
+  ));
+
   return (
     <form className="second-form">
-      <label className="second-form-label">Selecciona un género</label>
-      <label className="genre-pop">
-        Pop
-        <input
-          type="radio"
-          name="genre"
-          value="pop"
-          className="input-pop"
-          onChange={handleRadio}
-        />
-      </label>
-      <label className="genre-indie">
-        Indie
-        <input type="radio" name="genre" value="indie" onChange={handleRadio} />
-      </label>
-      <label className="genre-blues">
-        Blues
-        <input type="radio" name="genre" value="blues" onChange={handleRadio} />
-      </label>
-      <label className="genre-classical">
-        Clásica
-        <input
-          type="radio"
-          name="genre"
-          value="classical"
-          onChange={handleRadio}
-        />
-      </label>
-      <label className="genre-samba">
-        Samba
-        <input type="radio" name="genre" value="samba" onChange={handleRadio} />
-      </label>
+      <label className="second-form-label">Selecciona tu ritmo ragatanga</label>
+      <select className="second-form-input" onChange={handleSelectGenre}>
+        {genreMap}
+      </select>
     </form>
   );
 }
@@ -129,6 +107,7 @@ function App() {
   const [artist, setArtist] = useState(null);
   const [watching, setWatching] = useState("start");
   const [artistList, setArtistList] = useState("");
+  const [genreList, setGenreList] = useState("");
   const [filter, setFilter] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
@@ -211,6 +190,27 @@ function App() {
     }
   );
 
+  const { isLoading: searchGenre } = useQuery(
+    ["genreFilter", filter],
+    () => {
+      return axios.get(
+        "https://api.spotify.com/v1/recommendations/available-genre-seeds",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        console.log(data.genres);
+        setGenreList(data.genres);
+      },
+      enabled: !!token,
+    }
+  );
+
   // useEffect(() => {
   //   const hash = window.location.hash;
   //   let token = window.localStorage.getItem("token");
@@ -229,7 +229,7 @@ function App() {
   //   setToken(token);
   // }, []);
 
-  const getToken = useQuery(
+  const { data } = useQuery(
     ["token"],
     () => {
       let myHeaders = new Headers();
@@ -252,22 +252,20 @@ function App() {
     {
       onSuccess: async (data) => {
         const tokenData = await data.json();
-        console.log(tokenData);
         const tokenNumber = tokenData.access_token;
         setToken(tokenNumber);
       },
+      staleTime: 3600,
     }
   );
 
-  console.log(token);
-
-  const handleSelect = (ev) => {
+  const handleSelectArtist = (ev) => {
     const value = ev.target.value;
     console.log(value);
     setArtist(value);
   };
 
-  const handleRadio = (ev) => {
+  const handleSelectGenre = (ev) => {
     const value = ev.target.value;
     console.log(value);
     setGenre(value);
@@ -302,14 +300,19 @@ function App() {
         {watching === "start" && <StartWelcome />}
         {watching === "artist" && (
           <ArtistCall
-            handleSelect={handleSelect}
+            handleSelectArtist={handleSelectArtist}
             handleFilter={handleFilter}
             filteredData={filteredData}
             filter={filter}
             artistList={artistList}
           />
         )}
-        {watching === "genre" && <GenreForm handleRadio={handleRadio} />}
+        {watching === "genre" && (
+          <GenreForm
+            handleSelectGenre={handleSelectGenre}
+            genreList={genreList}
+          />
+        )}
 
         <Recommendation
           recommendation={recommendation}
@@ -321,14 +324,6 @@ function App() {
       </main>
       <footer className="footer">
         <p>By Ro Flo :)</p>
-        {/* <button onClick={getToken.mutate}>Token time</button>
-        {getToken.isError ? (
-          <div>Error</div>
-        ) : getToken.isLoading ? (
-          <div>Loading</div>
-        ) : getToken.isIdle ? (
-          <div>Idle</div>
-        ) : null} */}
       </footer>
     </div>
   );
