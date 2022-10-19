@@ -7,6 +7,9 @@ export default function ArtistList({ filteredData, handleSelectArtist }) {
 
   return (
     <select className="first-form-select" onChange={handleSelectArtist}>
+      <option selected disabled>
+        Elige aquí
+      </option>
       {filterList}
     </select>
   );

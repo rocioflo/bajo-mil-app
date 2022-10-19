@@ -29,7 +29,7 @@ function App() {
     ["songsByGenre", genre],
     () => {
       return axios.get(
-        `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=5&max_popularity=1`,
+        `https://api.spotify.com/v1/recommendations?seed_genres=${genre}&limit=5&max_popularity=0`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -58,11 +58,12 @@ function App() {
     ["songsByArtist", artist],
     () => {
       return axios.get(
-        `https://api.spotify.com/v1/recommendations?seed_artists=${artist}&limit=5&max_popularity=13`,
+        `https://api.spotify.com/v1/recommendations?seed_artists=${artist}&limit=5&max_popularity=26`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          timeout: 2000,
         }
       );
     },
@@ -78,11 +79,27 @@ function App() {
 
         setErrorMessage("");
 
+        // let popularity = [];
+
+        // for (const item of data.tracks) {
+        //   popularity.push(item.popularity);
+        // }
+
+        // let leastPopularIndex = popularity[0];
+
+        // for (const number of popularity) {
+        //   if (number <= leastPopularIndex) {
+        //     leastPopularIndex = number;
+        //   }
+        // }
+
+        const chosenArtist = data.tracks[0];
+
         const cleanData = {
-          artist: data.tracks[0].artists[0].name,
-          name: data.tracks[0].name,
-          image: data.tracks[0].album.images[1].url,
-          url: data.tracks[0].external_urls.spotify,
+          artist: chosenArtist.artists[0].name,
+          name: chosenArtist.name,
+          image: chosenArtist.album.images[1].url,
+          url: chosenArtist.external_urls.spotify,
         };
 
         setRecommendation(cleanData);

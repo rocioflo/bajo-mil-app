@@ -1,3 +1,5 @@
 export default function StartWelcome() {
-  return <div>¡Bienvenide! Musiquita para todes :)</div>;
+  return (
+    <div className="start-welcome">¡Bienvenide! Musiquita para todes :)</div>
+  );
 }
