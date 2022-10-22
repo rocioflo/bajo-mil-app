@@ -19,8 +19,8 @@ function App() {
   const [genre, setGenre] = useState(null);
   const [artist, setArtist] = useState(null);
   const [watching, setWatching] = useState("start");
-  const [artistList, setArtistList] = useState("");
-  const [genreList, setGenreList] = useState("");
+  const [artistList, setArtistList] = useState([]);
+  const [genreList, setGenreList] = useState([]);
   const [filter, setFilter] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -213,7 +213,7 @@ function App() {
           </a>
         </nav>
       </header>
-      <main>
+      <main className="body">
         {watching === "start" && <StartWelcome />}
         {watching === "artist" && (
           <ArtistForm

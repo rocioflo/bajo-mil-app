@@ -1,4 +1,5 @@
 export default function GenreForm({ handleSelectGenre, genreList }) {
+  console.log(genreList);
   const genreMap = genreList.map((genre, index) => (
     <option key={index} value={genre}>
       {genre}
